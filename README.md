@@ -75,7 +75,7 @@ El SPI es un número adimensional entre 0 y 100. Valores altos reflejan mayor ac
 
 Cabe señalar que el SPI, tal como lo definió GE Healthcare, está pensado para un paciente bajo anestesia general monitoreado con un pulsioxímetro clínico certificado, y emplea una ventana de normalización basada en varios minutos de datos del mismo sujeto. En este laboratorio se aplicó el mismo principio de cálculo (amplitud de pulso e intervalo entre latidos) a una señal PPG adquirida con un MAX30102 sobre la ESP32, en una persona consciente y en reposo, sin el algoritmo propietario de normalización histográfica del monitor comercial.
 
-### Parte C
+> ### Parte C
 
 ### 1. Procedimiento General
 
@@ -98,7 +98,7 @@ En cuanto al SPI por latido, durante el reposo inicial (0–40 s) el índice osc
 Los valores de SPI registrados durante el reposo inicial se ubicaron mayormente dentro del rango de 20–50 recomendado para una analgesia intraoperatoria adecuada, mientras que el ascenso observado durante la maniobra CPT y su transición hacia la recuperación llevó al índice por encima de ese rango, hasta el valor máximo de 100. Este comportamiento es consistente con lo esperado para un estímulo doloroso aplicado sin analgesia farmacológica: durante el CPT, el frío activa nociceptores y termorreceptores cutáneos que desencadenan vasoconstricción periférica y taquicardia relativa, ambos cambios que elevan el SPI. El sistema logró seguir en tiempo real este aumento de activación simpática durante la maniobra y su posterior recuperación, lo que confirma que el circuito y el algoritmo implementados responden adecuadamente a cambios de origen autonómico, aun cuando los valores absolutos no sean directamente comparables con los de un paciente anestesiado, ya que el sujeto de prueba estaba consciente y mantenía un tono simpático basal propio de la vigilia, además de la actividad muscular necesaria para sostener el hielo.
 
 > [!NOTE]
-> El ascenso observado durante el CPT corresponde principalmente a una reducción de la amplitud de pulso normalizada (PPGA_norm), coherente con la vasoconstricción esperada durante el estímulo frío, dado el mayor peso (0.7) que la fórmula del SPI asigna a esta variable frente al HBI_norm (0.3).
+> El ascenso del SPI durante el CPT se explica principalmente por la reducción de la amplitud del pulso (PPGA), efecto directo de la vasoconstricción periférica inducida por el frío; el acortamiento del intervalo entre latidos (HBI) contribuyó en menor medida, dado que la maniobra generó una activación simpática marcada pero sin un aumento sostenido de la frecuencia cardiaca.
 
 **Análisis 2: Alcance y limitaciones del sistema para cuantificar el dolor percibido**
 
