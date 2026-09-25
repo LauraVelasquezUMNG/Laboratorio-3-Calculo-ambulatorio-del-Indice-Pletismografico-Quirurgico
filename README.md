@@ -43,7 +43,7 @@ Para aplicarlo en el laboratorio, en lugar de la inmersión en agua helada, se u
 
 ### **Revisión literaria: Definición matemática del índice pletismográfico quirúrgico (SPI)**
 
-#### **Fundamento fisiológico**
+#### **1. Fundamento fisiológico**
 
 El SPI fue desarrollado por GE Healthcare y descrito por primera vez por Huiku et al. en 2007, bajo el nombre inicial de Surgical Stress Index (SSI) [1]. Su propósito es construir una medida continua y objetiva del balance entre la estimulación nociceptiva (dolor) y el efecto analgésico durante la anestesia general, a partir de una señal ya disponible en el quirófano: la onda de pulso obtenida por pulsioximetría [2]. Esto evita instrumentación adicional, ya que reutiliza el sensor SpO₂ que casi todo paciente anestesiado ya lleva puesto.
 
@@ -54,18 +54,18 @@ Un estímulo doloroso activa el sistema nervioso simpático, lo que produce dos 
 
 La analgesia (por ejemplo, opioides) tiende a atenuar ambos efectos. Por eso el SPI combina PPGA y HBI: son dos "sensores" fisiológicos distintos del mismo fenómeno, uno más ligado al tono vasomotor simpático (PPGA) y el otro más ligado al efecto de fármacos opioides sobre el nodo sinusal (HBI).
 
-#### **Variables de entrada**
+#### **2. Variables de entrada**
 
 - PPGA (Photoplethysmographic Pulse Wave Amplitude): diferencia entre el valor máximo y el mínimo de la señal PPG en cada latido (la componente AC de la onda de pulso).
 - HBI (Heart Beat Interval): intervalo de tiempo entre dos picos sistólicos consecutivos; equivale al recíproco de la frecuencia cardíaca instantánea.
 
-#### **Normalización**
+#### **3. Normalización**
 
 Como la amplitud absoluta de la PPG y la frecuencia cardíaca basal varían mucho entre personas, ninguna de las dos variables se usa cruda. GE Healthcare aplica una transformación de histograma sobre una ventana móvil de valores recientes de PPGA y HBI: cada nueva muestra se reubica según el percentil que ocupa dentro de la distribución de valores anteriores del mismo paciente, generando así PPGAnorm y HBInorm, ambos acotados entre 0 y 100 [4]. Esto es lo que permite comparar el SPI entre pacientes distintos, en vez de comparar solo cambios relativos dentro de un mismo paciente.
 
 Al iniciar la monitorización, el algoritmo necesita un período de "aprendizaje" (cercano a 3 minutos) para construir esa distribución de valores basales antes de que el número de SPI sea confiable. Antes de ese punto, el valor se muestra en gris.
 
-#### **Fórmula del SPI**
+#### **4. Fórmula del SPI**
 
 $$SPI = 100 - (0.7 \times PPGA_{norm} + 0.3 \times HBI_{norm})$$
 
