@@ -37,7 +37,7 @@ La comunicación entre el MAX30102 y la ESP32 se estableció mediante el protoco
 
 El montaje final empleado para la adquisición de la señal se presenta en la siguiente imagen.
 
-<img width="1600" height="1523" alt="image" src="https://github.com/user-attachments/assets/e2419c80-5ac7-4ee2-92b3-5eba488abffd" />
+<img width="700" height="1523" alt="image" src="https://github.com/user-attachments/assets/e2419c80-5ac7-4ee2-92b3-5eba488abffd" />
 
 ### **Cold Pressor Test (CPT)**
 
