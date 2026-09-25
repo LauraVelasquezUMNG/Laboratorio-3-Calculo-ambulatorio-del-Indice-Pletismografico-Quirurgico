@@ -41,9 +41,9 @@ Para aplicarlo en el laboratorio, en lugar de la inmersión en agua helada se em
 
 > ### Parte B
 
-### **Revisión literaria: Definición matemática del índice pletismográfico quirúrgico (SPI)**
+### **1. Revisión literaria: Definición matemática del índice pletismográfico quirúrgico (SPI)**
 
-#### **1. Fundamento fisiológico**
+#### **1.1. Fundamento fisiológico**
 
 El SPI fue desarrollado por GE Healthcare y descrito por primera vez por Huiku et al. en 2007, bajo el nombre inicial de Surgical Stress Index (SSI) [1]. Su propósito es construir una medida continua y objetiva del balance entre la estimulación nociceptiva (dolor) y el efecto analgésico durante la anestesia general, a partir de una señal ya disponible en el quirófano: la onda de pulso obtenida por pulsioximetría [2]. Esto evita instrumentación adicional, pues reutiliza el sensor de SpO₂ que casi todo paciente anestesiado ya lleva puesto.
 
@@ -54,18 +54,18 @@ Un estímulo doloroso activa el sistema nervioso simpático, lo que produce dos 
 
 La analgesia (por ejemplo, con opioides) tiende a atenuar ambos efectos. Por esta razón, el SPI combina PPGA y HBI: son dos indicadores fisiológicos distintos del mismo fenómeno, uno más ligado al tono vasomotor simpático (PPGA) y el otro más ligado al efecto de fármacos opioides sobre el nodo sinusal (HBI).
 
-#### **2. Variables de entrada**
+#### **1.2. Variables de entrada**
 
 - PPGA (Photoplethysmographic Pulse Wave Amplitude): diferencia entre el valor máximo y el mínimo de la señal PPG en cada latido (la componente AC de la onda de pulso).
 - HBI (Heart Beat Interval): intervalo de tiempo entre dos picos sistólicos consecutivos; equivale al recíproco de la frecuencia cardíaca instantánea.
 
-#### **3. Normalización**
+#### **1.3. Normalización**
 
 Dado que la amplitud absoluta de la PPG y la frecuencia cardíaca basal varían considerablemente entre personas, ninguna de las dos variables se emplea en su forma bruta. GE Healthcare aplica una transformación de histograma sobre una ventana móvil de valores recientes de PPGA y HBI: cada nueva muestra se reubica según el percentil que ocupa dentro de la distribución de valores anteriores del mismo paciente, generando así PPGAnorm y HBInorm, ambos acotados entre 0 y 100 [4]. Esto es lo que permite comparar el SPI entre pacientes distintos, en lugar de limitarse a comparar cambios relativos dentro de un mismo paciente.
 
 Al iniciar la monitorización, el algoritmo requiere un período de "aprendizaje" (cercano a 3 minutos) para construir esa distribución de valores basales antes de que el número de SPI sea confiable; antes de ese punto, el valor se muestra en gris.
 
-#### **4. Fórmula matemática e interpretación del SPI**
+#### **1.4. Fórmula matemática e interpretación del SPI**
 
 $$SPI = 100 - (0.7 \times PPGA_{norm} + 0.3 \times HBI_{norm})$$
 
@@ -74,6 +74,114 @@ Esta es la fórmula original reportada por Huiku et al. (2007) y confirmada en l
 El SPI es un número adimensional entre 0 y 100. Valores altos reflejan mayor actividad simpática o nocicepción (menor PPGAnorm y/o menor HBInorm), mientras que valores bajos reflejan analgesia adecuada o ausencia de estímulo doloroso. El rango de referencia para una anestesia bien balanceada en adultos sanos es 20-50, y se recomienda evitar incrementos súbitos mayores a 10 puntos, ya que estos son más indicativos de un evento nociceptivo agudo que el valor absoluto en sí [4].
 
 Cabe señalar que el SPI, tal como lo definió GE Healthcare, está pensado para un paciente bajo anestesia general monitoreado con un pulsioxímetro clínico certificado, y emplea una ventana de normalización basada en varios minutos de datos del mismo sujeto. En este laboratorio se aplicó el mismo principio de cálculo (amplitud de pulso e intervalo entre latidos) a una señal PPG adquirida con un MAX30102 sobre la ESP32, en una persona consciente y en reposo, sin el algoritmo propietario de normalización histográfica del monitor comercial.
+
+### **2. Captura y Procesamiento - C++ y MATLAB**
+
+El procesamiento en tiempo real de la señal fotopletismográfica (PPG) proveniente del sensor MAX30102 se estructuró mediante una arquitectura distribuida entre el firmware del microcontrolador ESP32 (desarrollado en VS Code - PlatformIO) y el software de procesamiento numérico en MATLAB.
+
+#### **2.1. Adquisición y Transmisión**
+
+En el ESP32, se configuró la librería del sensor MAX30102 para muestrear el canal infrarrojo (IR) a una frecuencia de $100\text{ Hz}$ ($\Delta t = 10\text{ ms}$). El código gestiona el tiempo de muestreo mediante temporizadores por millis() para evitar bloqueos y envía la lectura limpia por la interfaz serie UART a $115200\text{ Baudios}$:
+
+```cpp
+#include <Arduino.h>
+#include <Wire.h>
+#include "MAX30105.h"
+
+MAX30105 particleSensor;
+unsigned long lastSampleTime = 0;
+const unsigned long sampleInterval = 10; // 10 ms -> Fs = 100 Hz
+
+void setup() {
+  Serial.begin(115200);
+  Wire.begin(21, 22); // Pines I2C SDA=21, SCL=22 en ESP32
+
+  if (!particleSensor.begin(Wire, I2C_SPEED_FAST)) {
+    while (1); // Error de inicialización
+  }
+
+  // Configuración del sensor MAX30102
+  particleSensor.setup(0x1F, 4, 2, 100, 411, 4096); 
+}
+
+void loop() {
+  if (millis() - lastSampleTime >= sampleInterval) {
+    lastSampleTime = millis();
+    uint32_t irValue = particleSensor.getIR(); // Canal IR para PPG
+    
+    // Envío de la lectura raw por puerto serie
+    Serial.println(irValue); 
+  }
+}
+```
+
+#### **2.2. Acondicionamiento y Filtrado Digital**
+
+La señal recibida por puerto serie en MATLAB se procesa mediante un filtro digital pasa-banda Butterworth de orden 3 ($0.7\text{ Hz} - 3.5\text{ Hz}$) utilizando la función filtfilt para lograr una respuesta de fase cero. Se invierte el signo para alinear las pulsaciones con picos positivos:
+
+```matlab
+% Filtrado pasa-banda Butterworth de orden 3
+fs = 100;
+[b, a] = butter(3, [0.7 3.5]/(fs/2), 'bandpass');
+ppg_filtered = filtfilt(b, a, ppg_raw);
+
+% Inversión de signo para orientación adecuada de picos sistólicos
+ppg_filtered = -ppg_filtered;
+```
+
+#### **2.3. Detección de Picos y Valles - Método del Alpinista (MMDP)**
+
+Para poder detectar satisfactoriamente los picos y valles de la señal PPG capturada, se implementó el método de detección denominado "Método del Alpinista". Este algoritmo identifica picos sistólicos evaluando el número de pasos ascendentes consecutivos ($num\_upsteps$) que cumplen $f(t_i) > f(t_{i-1})$. Para rechazar artefactos y evitar la falsa detección de la muesca dicrota, se requirió un umbral estricto de $8$ pasos ascendentes continuos y un intervalo de refractariedad de $0.35\text{ s}$ entre latidos:
+
+```matlab
+% Algoritmo MMPD: Detección de picos por pendientes ascendentes continuas
+if (ppg_filtered(i) > ppg_filtered(i-1))
+    num_upsteps = num_upsteps + 1;
+else
+    if (num_upsteps >= min_upsteps) && ((i - last_peak_idx) > min_hbi_samples)
+        % Confirmación de pico sistólico
+        peak_idx = i - 1;
+        peaks = [peaks; peak_idx];
+        
+        % Localización del valle previo en el intervalo del latido
+        [~, min_rel_idx] = min(ppg_filtered(last_peak_idx:peak_idx));
+        valleys = [valleys; last_peak_idx + min_rel_idx - 1];
+        
+        last_peak_idx = peak_idx;
+    end
+    num_upsteps = 0;
+end
+```
+
+#### **2.4. Extracción de Parámetros y Cálculo del SPI**
+
+Por cada latido $k$ detectado, se calcula la amplitud pico a valle ($PPGA_k$) y el intervalo inter-latido ($HBI_k$). Ambas variables se normalizan en un rango relativo de 0 a 100 ($PPGA_{norm}$ y $HBI_{norm}$) y se computa el $SPI$:
+
+```matlab
+% Cálculo de parámetros por latido
+PPGA = ppg_filtered(peaks(end)) - ppg_filtered(valleys(end));
+HBI = (peaks(end) - peaks(end-1)) / fs;
+
+% Normalización lineal relativa (0 - 100)
+PPGA_norm = ((PPGA - min_PPGA) / (max_PPGA - min_PPGA)) * 100;
+HBI_norm  = ((HBI  - min_HBI)  / (max_HBI  - min_HBI))  * 100;
+
+% Ecuación del Índice Pletismográfico Quirúrgico
+SPI = 100 - (0.7 * PPGA_norm + 0.3 * HBI_norm);
+```
+
+### **3. Evaluación del SPI bajo maniobra CPT**
+
+Para evaluar la capacidad del sistema en la detección de respuestas simpáticas e inducción de vasoconstricción periférica, se ejecutó el protocolo Cold Pressor Test (CPT) durante $120\text{ segundos}$ continuos a un voluntario sano. Esta prueba se desarrolló mediante las siguientes etapas:
+
+* **1. Fase de Reposo ($0 - 40\text{ s}$):** El sujeto permaneció en reposo hemodinámico y sin movimiento.
+* **2. Estímulo Nociceptivo - CPT ($40 - 80\text{ s}$):** Agarre de bloque de hielo de la mano contralateral ($\approx 0 - 4\text{ }^\circ\text{C}$).
+* **3. Fase de Recuperación ($80 - 120\text{ s}$):** Retiro del estímulo y retorno a condiciones de reposo.
+
+La señal PPG capturada durante dos minutos se observa a continuación:
+
+<img width="1414" height="912" alt="image" src="https://github.com/user-attachments/assets/da8c6d67-5c02-4b36-b0ed-2be113bee506" />
+
 
 > ### Parte C
 
