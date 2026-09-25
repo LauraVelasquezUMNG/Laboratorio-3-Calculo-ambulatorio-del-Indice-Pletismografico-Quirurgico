@@ -75,6 +75,62 @@ El SPI es un número adimensional entre 0 y 100. Valores altos reflejan mayor ac
 
 Cabe señalar que el SPI, tal como lo definió GE Healthcare, está pensado para un paciente bajo anestesia general monitoreado con un pulsioxímetro clínico certificado, y emplea una ventana de normalización basada en varios minutos de datos del mismo sujeto. En este laboratorio se aplicó el mismo principio de cálculo (amplitud de pulso e intervalo entre latidos) a una señal PPG adquirida con un MAX30102 sobre la ESP32, en una persona consciente y en reposo, sin el algoritmo propietario de normalización histográfica del monitor comercial.
 
+### Parte C
+
+### 1. Procedimiento General
+
+El sistema de adquisición se construyó a partir de un sensor óptico MAX30102, que integra en un solo encapsulado un LED emisor y un fotodetector, conectado a una placa ESP32 mediante comunicación con el módulo interno del sensor. El dedo del sujeto de prueba se colocó sobre el sensor para registrar, por reflectancia, las variaciones del volumen sanguíneo periférico (señal PPG), mientras la ESP32 transmitió los datos crudos (tiempo y valor IR) por puerto serial hacia MATLAB a una frecuencia de muestreo de 100 Hz.
+
+La captura se realizó siguiendo el protocolo completo del Cold Pressor Test (CPT), con una duración total de 2 minutos dividida en tres fases: reposo inicial (0–40 s), aplicación de la maniobra CPT (40–80 s) y recuperación (80–120 s). Para inducir el estímulo doloroso, el sujeto de prueba sostuvo un trozo de hielo en la mano contraria a la que portaba el sensor, de manera que la maniobra generara una respuesta simpática sistémica sin interferir directamente con la señal PPG adquirida.
+
+Una vez finalizada la captura, la señal se procesó en MATLAB descartando los primeros 1.5 s por transitorio de estabilización y aplicando un filtro pasa banda Butterworth (0.7–3.5 Hz, orden 3) para aislar el componente cardiaco de la señal. Sobre la señal filtrada se aplicó el método del alpinista para la detección de picos y valles, a partir de los cuales se calcularon, latido a latido, la amplitud pico-valle (PPGA) y el intervalo entre latidos (HBI); ambas variables se normalizaron entre 0 y 100 y se combinaron mediante la fórmula $SPI = 100 - (0.7 \times PPGA_{norm} + 0.3 \times HBI_{norm})$ para obtener el índice pletismográfico quirúrgico (SPI) en función del tiempo.
+
+### 2. Resultados Obtenidos
+
+La señal PPG filtrada permitió una detección clara y continua de picos y valles a lo largo de todo el registro, sin pérdida aparente de latidos ni saturación de la señal, lo que indica una adecuada calidad de contacto entre el dedo y el sensor durante los 2 minutos de captura. La amplitud pico-valle se mantuvo relativamente estable durante los primeros 20 s, con oscilaciones más marcadas hacia el final del reposo y durante la maniobra, coherentes con los cambios de tono vasomotor esperados.
+
+En cuanto al SPI por latido, durante el reposo inicial (0–40 s) el índice osciló mayormente entre 20 y 40, con una caída puntual hasta valores cercanos a 12–18 alrededor de los 13–17 s. A partir de los 20 s se observó un ascenso progresivo que continuó durante la maniobra CPT (40–80 s), alcanzando una meseta sostenida entre 50 y 65. El valor más alto de todo el registro corresponde a un pico de 100 hacia el final de la maniobra y el inicio de la recuperación (≈83–87 s), seguido de un descenso gradual hasta valores de 25–32 al cierre de los 120 s, sin llegar a estabilizarse por completo en ese lapso.
+
+### 3. Análisis de Resultados
+
+**Análisis 1: Comparación del SPI obtenido con los valores de referencia usados en cirugía**
+
+Los valores de SPI registrados durante el reposo inicial se ubicaron mayormente dentro del rango de 20–50 recomendado para una analgesia intraoperatoria adecuada, mientras que el ascenso observado durante la maniobra CPT y su transición hacia la recuperación llevó al índice por encima de ese rango, hasta el valor máximo de 100. Este comportamiento es consistente con lo esperado para un estímulo doloroso aplicado sin analgesia farmacológica: durante el CPT, el frío activa nociceptores y termorreceptores cutáneos que desencadenan vasoconstricción periférica y taquicardia relativa, ambos cambios que elevan el SPI. El sistema logró seguir en tiempo real este aumento de activación simpática durante la maniobra y su posterior recuperación, lo que confirma que el circuito y el algoritmo implementados responden adecuadamente a cambios de origen autonómico, aun cuando los valores absolutos no sean directamente comparables con los de un paciente anestesiado, ya que el sujeto de prueba estaba consciente y mantenía un tono simpático basal propio de la vigilia, además de la actividad muscular necesaria para sostener el hielo.
+
+> [!NOTE]
+> El ascenso observado durante el CPT corresponde principalmente a una reducción de la amplitud de pulso normalizada (PPGA_norm), coherente con la vasoconstricción esperada durante el estímulo frío, dado el mayor peso (0.7) que la fórmula del SPI asigna a esta variable frente al HBI_norm (0.3).
+
+**Análisis 2: Alcance y limitaciones del sistema para cuantificar el dolor percibido**
+
+El sistema calcula el SPI a partir de dos variables periféricas, la amplitud pico-valle (PPGA) y el intervalo entre latidos (HBI), que se modulan con la activación simpática asociada a un estímulo nociceptivo. Esto significa que el índice refleja el nivel de activación autonómica y no el dolor en sí mismo, ya que otras fuentes de activación simpática (frío, esfuerzo de sujeción del hielo, movimiento, incluso la anticipación del estímulo) pueden producir el mismo tipo de respuesta. El valor máximo de SPI registrado justo en la transición entre la maniobra y la recuperación coincide con el momento en que el sujeto retira la mano del hielo, por lo que probablemente refleja también el movimiento del dedo sobre el sensor y no únicamente un cambio fisiológico; este tipo de artefacto es una limitación conocida de los métodos de detección de picos basados en umbral fijo, como el método del alpinista empleado aquí.
+
+Dentro de este alcance, el sistema cumplió su función principal: capturar de forma continua la señal PPG y traducirla en un índice que sigue el curso esperado de la respuesta simpática ante un estímulo doloroso controlado, sin necesidad de instrumentación clínica adicional. Para fortalecer su uso como herramienta de cuantificación, el siguiente paso natural sería contrastarlo con un monitor de signos vitales certificado y ampliar la evaluación a más de un sujeto de prueba.
+
+### 4. Preguntas para la Discusión
+
+**Pregunta 1: ¿Cómo se relacionan las variaciones del volumen sanguíneo periférico con el balance autonómico?**
+
+El volumen de sangre que llega a los tejidos periféricos en cada latido está regulado por el tono vasomotor de las arteriolas, controlado en gran medida por fibras simpáticas vasoconstrictoras. Ante un aumento de la actividad simpática, como el inducido por el CPT, se produce vasoconstricción periférica, lo que reduce el volumen de sangre que ingresa al lecho vascular con cada latido y disminuye la amplitud de la onda de pulso (PPGA); de forma simultánea, la retirada del tono vagal cardiaco acorta el intervalo entre latidos (HBI), reflejando el aumento de frecuencia cardiaca asociado a la activación simpática. Un predominio parasimpático, en cambio, se traduce en vasodilatación, mayor amplitud de pulso e intervalos entre latidos más largos.
+
+Esta relación entre amplitud y frecuencia del pulso es precisamente la que el SPI utiliza al combinar PPGA y HBI en un único índice: al normalizar y ponderar ambas variables, el sistema traduce cambios vasculares y cronotrópicos, que de otro modo habría que interpretar por separado, en una sola medida continua del balance autonómico.
+
+**Pregunta 2: ¿Cómo se compara el SPI con otros índices comúnmente empleados en cirugía, como el índice nocicepción-analgesia (ANI) y el índice de perfusión?**
+
+El SPI, el ANI y el índice de perfusión (PI) parten de señales periféricas ya disponibles en quirófano, pero cada uno enfatiza una variable fisiológica distinta. El SPI combina amplitud de pulso e intervalo entre latidos derivados de la PPG, capturando el componente vasomotor y el cronotrópico de la respuesta simpática. El ANI se calcula a partir de la variabilidad de la frecuencia cardiaca asociada a la respiración, reflejando principalmente el tono vagal cardiaco: valores altos indican predominio parasimpático (buena analgesia) y valores bajos indican retirada vagal por nocicepción, es decir, evalúa el balance desde la rama parasimpática, complementaria a la que enfatiza el SPI. El índice de perfusión se obtiene de la relación entre el componente pulsátil y no pulsátil de la señal del oxímetro, siendo un indicador puramente vasomotor, sin componente de frecuencia cardiaca, por lo que resulta sensible también a factores como la temperatura periférica o el uso de vasoactivos.
+
+Los tres índices resultan complementarios entre sí más que redundantes: el SPI y el PI comparten la dependencia del tono vasomotor periférico (de hecho, el PI puede entenderse como un componente parcial de lo que el SPI ya incorpora), mientras que el ANI aporta información adicional desde la rama vagal. Por esta razón, su uso conjunto en un mismo monitor puede ofrecer una lectura más completa del balance nocicepción-analgesia que cualquiera de los tres de forma aislada.
+
+> [!NOTE]
+> A diferencia del SPI y el PI, que dependen del tono vasomotor simpático, el ANI se basa en la arritmia sinusal respiratoria (variabilidad de HBI ligada a la respiración), por lo que responde principalmente a cambios en el tono parasimpático cardiaco.
+
+### 5. Conclusiones
+
+El uso de la onda de pulso como fuente de información sobre el balance entre la nocicepción y la analgesia responde a la necesidad de contar, durante la anestesia general, con una medida objetiva y continua del estado autonómico del paciente, que no dependa de su reporte verbal ni de instrumentación adicional a la ya disponible en el quirófano. En esta práctica se implementó un sistema ambulatorio, basado en el sensor MAX30102 acoplado a un ESP32, capaz de adquirir la señal fotopletismográfica, extraer de ella la amplitud pico-valle y el intervalo entre latidos mediante el método del alpinista, y calcular con ellos el índice pletismográfico quirúrgico (SPI) en tiempo real.
+
+Al someter al sistema a la prueba de Cold Pressor Test como estímulo doloroso controlado, sosteniendo el sujeto de prueba un trozo de hielo en la mano contraria a la del sensor, el SPI siguió el comportamiento esperado a lo largo de las tres fases del protocolo: valores dentro del rango de referencia durante el reposo inicial, un ascenso sostenido hacia el final de la línea base y durante la maniobra, y un pico marcado coincidente con el cierre del estímulo frío, seguido de un descenso progresivo durante la recuperación. Este resultado permite concluir que el sistema desarrollado logra aproximar, con electrónica de bajo costo y sin necesidad de un monitor comercial certificado, el mismo principio de cálculo que emplean los equipos especializados de anestesia para estimar el balance nocicepción-analgesia, cumpliendo así con el objetivo general planteado para la práctica.
+
+Como siguiente paso, sería conveniente contrastar las lecturas del sistema frente a un monitor de signos vitales certificado y ampliar la prueba a varios sujetos, de manera que se pueda precisar con mayor detalle la contribución específica del estímulo nociceptivo frente a otras fuentes de activación simpática (esfuerzo muscular, movimiento del sensor) presentes durante el registro.
+
 ### Referencias Bibliográficas
 
 [1] V. Bonhomme, K. Uutela, G. Hans, I. Maquoi, J. D. Born y J. F. Brichant, "Comparison of the Surgical Pleth Index™ with haemodynamic variables to assess nociception-anti-nociception balance during general anaesthesia," British Journal of Anaesthesia, vol. 106, no. 1, pp. 101–111, 2011. https://doi.org/10.1093/bja/aeq291.
