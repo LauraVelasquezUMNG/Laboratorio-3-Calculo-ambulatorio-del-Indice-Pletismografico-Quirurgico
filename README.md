@@ -39,6 +39,47 @@ El CPT es una prueba de estrés que consiste en exponer una parte del cuerpo, cl
 
 Para aplicarlo en el laboratorio, en lugar de la inmersión en agua helada, se usó una variante simple: se le pidió al profesor, que fue el sujeto de prueba, que sostuviera un trozo de hielo en la mano izquierda, mano contraria del sensor. La captura duró 2 minutos, la cual constó de tres fases: Fase basal (0-40 s): Reposo, sin estímulo; CPT (40-80 s): el sujeto de prueba sostiene el hielo; Fase de recuperación (80-120s): Se retira el hielo y el sujeto vuelve al reposo.
 
+> ### Parte B
+
+### **Revisión literaria: Definición matemática del índice pletismográfico quirúrgico (SPI)**
+
+#### **Fundamento fisiológico**
+
+El SPI fue desarrollado por GE Healthcare y descrito por primera vez por Huiku et al. en 2007, bajo el nombre inicial de Surgical Stress Index (SSI) [1]. Su propósito es construir una medida continua y objetiva del balance entre la estimulación nociceptiva (dolor) y el efecto analgésico durante la anestesia general, a partir de una señal ya disponible en el quirófano: la onda de pulso obtenida por pulsioximetría [2]. Esto evita instrumentación adicional, ya que reutiliza el sensor SpO₂ que casi todo paciente anestesiado ya lleva puesto.
+
+Un estímulo doloroso activa el sistema nervioso simpático, lo que produce dos efectos medibles en la periferia:
+
+- Vasoconstricción periférica, que reduce el volumen de sangre que entra al tejido con cada latido y por lo tanto disminuye la amplitud de la onda PPG (PPGA).
+- Aumento de la frecuencia cardíaca, que acorta el intervalo entre latidos (HBI).
+
+La analgesia (por ejemplo, opioides) tiende a atenuar ambos efectos. Por eso el SPI combina PPGA y HBI: son dos "sensores" fisiológicos distintos del mismo fenómeno, uno más ligado al tono vasomotor simpático (PPGA) y el otro más ligado al efecto de fármacos opioides sobre el nodo sinusal (HBI).
+
+#### **Variables de entrada**
+
+- PPGA (Photoplethysmographic Pulse Wave Amplitude): diferencia entre el valor máximo y el mínimo de la señal PPG en cada latido (la componente AC de la onda de pulso).
+- HBI (Heart Beat Interval): intervalo de tiempo entre dos picos sistólicos consecutivos; equivale al recíproco de la frecuencia cardíaca instantánea.
+
+#### **Normalización**
+
+Como la amplitud absoluta de la PPG y la frecuencia cardíaca basal varían mucho entre personas, ninguna de las dos variables se usa cruda. GE Healthcare aplica una transformación de histograma sobre una ventana móvil de valores recientes de PPGA y HBI: cada nueva muestra se reubica según el percentil que ocupa dentro de la distribución de valores anteriores del mismo paciente, generando así PPGAnorm y HBInorm, ambos acotados entre 0 y 100 [4]. Esto es lo que permite comparar el SPI entre pacientes distintos, en vez de comparar solo cambios relativos dentro de un mismo paciente.
+
+Al iniciar la monitorización, el algoritmo necesita un período de "aprendizaje" (cercano a 3 minutos) para construir esa distribución de valores basales antes de que el número de SPI sea confiable. Antes de ese punto, el valor se muestra en gris.
+
+#### **Fórmula del SPI**
+
+$$SPI = 100 - (0.7 \times PPGA_{norm} + 0.3 \times HBI_{norm})$$
+
+Esta es la fórmula original reportada por Huiku et al. (2007) y confirmada en la documentación técnica de GE Healthcare [4]. El peso de 0,7 sobre PPGAnorm frente a 0,3 sobre HBInorm refleja que la amplitud del pulso responde de forma más marcada y más rápida al estímulo nociceptivo que el intervalo entre latidos.
+
+> **Nota sobre variantes en la literatura:** algunos artículos clínicos más
+> recientes citan la fórmula con los coeficientes intercambiados,
+> $SPI = 100 - (0.33 \times HBI + 0.67 \times PPGA)$ [5], [6], y otros la
+> escriben como $100 \times (0.67 \times PPGA_{norm} + 0.33 \times HBI_{norm})$ [7]
+> (posible error tipográfico de signo). Comparando con las fuentes primarias
+> —el artículo original de Huiku et al. y la documentación del fabricante—,
+> la versión consistente es 0,7 sobre PPGAnorm y 0,3 sobre HBInorm [1], [4].
+> Vale la pena mencionar esta discrepancia entre publicaciones en el informe,
+> aclarando cuál versión se tomó como referencia.
 
 ### Referencias Bibliográficas
 
