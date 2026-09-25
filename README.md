@@ -190,7 +190,7 @@ La señal PPG capturada durante dos minutos se observa a continuación:
 
 La gráfica ilustra la forma de onda de la señal fotopletismográfica (PPG) filtrada a lo largo de los $120\text{ segundos}$ de registro, junto con la localización de los picos (rojos) y valles (azules) identificados por el algoritmo MMPD. Durante el reposo inicial ($0 - 40\text{ s}$), la onda presenta una amplitud pico-valle amplia y uniforme ($\approx \pm 1500\text{ u.a.}$); no obstante, al aplicar el estímulo por frío en la maniobra CPT ($40 - 80\text{ s}$), se observa una notable reducción en la amplitud de la señal PPG por vasoconstricción periférica, donde las deflexiones se contraen hacia un rango de $\pm 600\text{ u.a.}$, para luego iniciar una reexpansión gradual durante la fase de recuperación ($80 - 120\text{ s}$) que retorna la onda a sus dimensiones basales. 
 
-### **4. Evolución Temporal del SPI - Análisis Gráfico**
+### **4. Evolución Temporal del SPI**
 
 Para lograr una representación clara del comportamiento dinámico de la respuesta autonómica a lo largo del tiempo, se modificó el código original de MATLAB con el fin de almacenar las series temporales completas de las variables fisiológicas ($PPGA$ e $HBI$) y registrar los valores del $SPI$ calculados latido a latido. Esta modificación permitió generar un entorno gráfico centrado exclusivamente en la trayectoria temporal del índice ($SPI$ en función del tiempo $t$), facilitando la correlación directa entre las fases de la prueba y la variación cuantitativa del nivel de estrés o nocicepción del sujeto.
 
