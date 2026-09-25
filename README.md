@@ -176,7 +176,7 @@ HBI_norm  = ((HBI  - min_HBI)  / (max_HBI  - min_HBI))  * 100;
 SPI = 100 - (0.7 * PPGA_norm + 0.3 * HBI_norm);
 ```
 
-### **3. Evaluación del SPI bajo maniobra CPT**
+### **3. PPG y SPI bajo maniobra CPT**
 
 Para evaluar la capacidad del sistema en la detección de respuestas simpáticas e inducción de vasoconstricción periférica, se ejecutó el protocolo Cold Pressor Test (CPT) durante $120\text{ segundos}$ continuos a un voluntario sano. Esta prueba se desarrolló mediante las siguientes etapas:
 
