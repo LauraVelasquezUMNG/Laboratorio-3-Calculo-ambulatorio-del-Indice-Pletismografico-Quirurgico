@@ -65,18 +65,15 @@ Como la amplitud absoluta de la PPG y la frecuencia cardíaca basal varían much
 
 Al iniciar la monitorización, el algoritmo necesita un período de "aprendizaje" (cercano a 3 minutos) para construir esa distribución de valores basales antes de que el número de SPI sea confiable. Antes de ese punto, el valor se muestra en gris.
 
-#### **4. Fórmula del SPI**
+#### **4. Fórmula matemática e interpretación del SPI**
 
 $$SPI = 100 - (0.7 \times PPGA_{norm} + 0.3 \times HBI_{norm})$$
 
 Esta es la fórmula original reportada por Huiku et al. (2007) y confirmada en la documentación técnica de GE Healthcare [4]. El peso de 0,7 sobre PPGAnorm frente a 0,3 sobre HBInorm refleja que la amplitud del pulso responde de forma más marcada y más rápida al estímulo nociceptivo que el intervalo entre latidos.
 
-> **Nota sobre variantes en la literatura:** algunos artículos clínicos más
-> recientes citan la fórmula con los coeficientes intercambiados,
-> $SPI = 100 - (0.33 \times HBI + 0.67 \times PPGA)$ [5], [6], y otros la
-> escriben como $100 \times (0.67 \times PPGA_{norm} + 0.33 \times HBI_{norm})$ [7]
-> (posible error tipográfico de signo). Comparando con las fuentes primarias
-> (el artículo original de Huiku et al), la versión consistente es 0,7 sobre PPGAnorm y 0,3 sobre HBInorm.
+El SPI es un número adimensional entre 0 y 100. Valores altos reflejan mayor actividad simpática/nocicepción (menor PPGAnorm y/o menor HBInorm); valores bajos reflejan analgesia adecuada o ausencia de estímulo doloroso. El rango de referencia para una anestesia bien balanceada en adultos sanos es 20–50 y se recomienda evitar incrementos súbitos mayores a 10 puntos, ya que son más indicativos de un evento nociceptivo agudo que el valor absoluto en sí [4].
+
+Es importante señalar que el SPI, tal como lo definió GE Healthcare, está pensado para un paciente bajo anestesia general monitoreado con un pulsioxímetro clínico certificado, y usa una ventana de normalización basada en varios minutos de datos del mismo sujeto. En este laboratorio se aplicó el mismo principio de cálculo (amplitud de pulso e intervalo entre latidos) a una señal PPG adquirida con un MAX30102 sobre la ESP32, en una persona consciente y en reposo, sin el algoritmo propietario de normalización histográfica del monitor comercial.
 
 ### Referencias Bibliográficas
 
