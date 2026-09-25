@@ -182,6 +182,17 @@ La señal PPG capturada durante dos minutos se observa a continuación:
 
 <img width="1414" height="912" alt="image" src="https://github.com/user-attachments/assets/da8c6d67-5c02-4b36-b0ed-2be113bee506" />
 
+Durante los $120\text{ segundos}$ de registro, la señal fotopletismográfica (PPG) filtrada mostró una correcta identificación de picos y valles sistólicos mediante el algoritmo MMPD, evidenciando en los primeros $40\text{ segundos}$ una morfología estable con una amplitud pico a valle amplia de entre $+1500\text{ u.a.}$ y $-1500\text{ u.a.}$; sin embargo, al aplicar la prueba Cold Pressor Test ($40 - 80\text{ s}$), se observó una significativa reducción en la amplitud de la señal PPG debido a la vasoconstricción periférica (descendiendo los picos a $+600\text{ u.a.}$ y ascendiendo los valles a $-600\text{ u.a.}$), para posteriormente iniciar una reexpansión vascular progresiva durante la fase de recuperación ($80 - 120\text{ s}$) que retornó la amplitud a sus valores iniciales.
+
+### **4. Evolución Temporal del SPI - Análisis Gráfico**
+
+Para lograr una representación clara del comportamiento dinámico de la respuesta autonómica a lo largo del tiempo, se modificó el código original de MATLAB con el fin de almacenar las series temporales completas de las variables fisiológicas ($PPGA$ e $HBI$) y registrar los valores del $SPI$ calculados latido a latido. Esta modificación permitió generar un entorno gráfico centrado exclusivamente en la trayectoria temporal del índice ($SPI$ en función del tiempo $t$), facilitando la correlación directa entre las fases de la prueba y la variación cuantitativa del nivel de estrés o nocicepción del sujeto.
+
+A continuación se presenta y analiza la gráfica resultante tras la ejecución del protocolo experimental _Cold Pressor Test_ (CPT):
+
+<img width="1395" height="912" alt="image" src="https://github.com/user-attachments/assets/8fcfc0d2-c198-4bcb-9569-6100dda6b620" />
+
+El trazado del $SPI$ evidencia con alta sensibilidad los tres estados hemodinámicos de la prueba: durante la línea base ($0 - 40\text{ s}$) el índice fluctúa de manera estable en una franja inactiva de bajo estrés entre $20$ y $40$ unidades; al iniciar la inmersión en agua helada ($40 - 80\text{ s}$), se aprecia claramente cómo el $SPI$ sube de manera pronunciada hasta sostenerse en un rango elevado de $55\text{ a }67$ unidades por la vasoconstricción periférica y la descarga simpática ante el dolor térmico; finalmente, tras retirar la mano del estímulo ($80 - 120\text{ s}$), el $SPI$ vuelve a bajar progresivamente hasta estabilizarse nuevamente en sus niveles basales de reposo ($20 - 30$ unidades), registrando únicamente un pico transitorio puntual de $100$ unidades cerca del segundo $86$ debido a un artefacto.
 
 > ### Parte C
 
