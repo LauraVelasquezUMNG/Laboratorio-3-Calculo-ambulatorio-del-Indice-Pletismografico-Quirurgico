@@ -33,6 +33,12 @@ Se montó en protoboard el circuito presentado en la figura anterior, tomado de 
 
 Como sensor se usó el optoacoplador, modificado para funcionar como sensor de reflectancia. El emisor y el detector se separaron y se colocaron lado a lado, de modo que la luz reflejada por el dedo llegara al detector. La salida del circuito se conectó a una entrada analógica de una ESP32 y se verificó la captura de las variaciones del volumen sanguíneo. Aunque el circuito se montó y se probó satisfactoriamente, la captura final se realizó con un módulo MAX30102 conectado a la ESP32, el cual integra en un solo encapsulado LEDs rojo e infrarrojo, un fotodetector y un ADC interno.
 
+La comunicación entre el MAX30102 y la ESP32 se estableció mediante el protocolo I2C, utilizando los pines por defecto de la ESP32 (SDA = GPIO21, SCL = GPIO22). Para el manejo del sensor se empleó la librería SparkFun MAX3010x, configurada con una corriente de LED de 60 (en una escala de 0 a 255), una frecuencia de muestreo de 100 Hz, un ancho de pulso de 411 µs y un rango del ADC de 4096, utilizando únicamente el canal infrarrojo (modo Red+IR) para la adquisición de la señal PPG. Los datos se transmitieron por el puerto serial, en pares de tiempo (ms) y valor de intensidad infrarroja, para su posterior procesamiento en MATLAB.
+
+El montaje final empleado para la adquisición de la señal se presenta en la siguiente imagen.
+
+<img width="1600" height="1523" alt="image" src="https://github.com/user-attachments/assets/e2419c80-5ac7-4ee2-92b3-5eba488abffd" />
+
 ### **Cold Pressor Test (CPT)**
 
 El CPT es una prueba de estrés que consiste en sumergir una parte del cuerpo, clásicamente la mano o el antebrazo, en agua helada durante un tiempo definido. El frío activa los nociceptores y termorreceptores cutáneos y provoca una respuesta simpática, la cual se traduce en vasoconstricción periférica, aumento de la frecuencia cardíaca y de la presión arterial, y una sensación de dolor que se incrementa con el tiempo [3]. Por esta razón, el CPT se emplea en investigación como estímulo doloroso controlado, reproducible y seguro. En el contexto del SPI, la activación simpática inducida por un estímulo nociceptivo reduce la amplitud del pulso por vasoconstricción y acorta el intervalo entre latidos; ambos cambios elevan el valor del SPI. Por eso se espera un aumento durante el CPT y un retorno hacia el valor basal durante la recuperación.
