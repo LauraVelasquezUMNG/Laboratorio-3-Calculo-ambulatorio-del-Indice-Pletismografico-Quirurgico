@@ -23,7 +23,9 @@ El objetivo de la Parte A fue construir el sistema de adquisición de la onda de
 
 ### **Circuito de acondicionamiento y sensor**
 
-Se montó en protoboard el circuito de la Figura 1 de la guía el cual consta de:
+<img width="710" height="401" alt="image" src="https://github.com/user-attachments/assets/09b37a9d-5b0e-448d-9f68-7bbb1389e0bd" />
+
+Se montó en protoboard el circuito de la figura anterior presentada en la guía de laboratorio, el cual consta de:
 
 - Etapa de emisión: un transistor 2N3904 que controla el LED emisor del optoacoplador.
 - Etapa de detección: el fototransistor, cuya señal pasa por un filtro pasa-altas pasivo que elimina el nivel DC.
@@ -35,4 +37,13 @@ Como sensor se usó el optoacoplador, modificado para funcionar como sensor de r
 
 El CPT es una prueba de estrés que consiste en exponer una parte del cuerpo, clásicamente la mano o el antebrazo sumergidos en agua helada, a una temperatura muy baja durante un tiempo definido. El frío activa los nociceptores y termorreceptores cutáneos y provoca una respuesta simpática. Esta respuesta produce vasoconstricción periférica, aumento de la frecuencia cardíaca y de la presión arterial, y una sensación de dolor que aumenta con el tiempo [3]. Por eso el CPT se usa en investigación como estímulo doloroso controlado, reproducible y seguro. En el contexto del SPI, ante un estímulo nociceptivo, la activación simpática reduce la amplitud del pulso por la vasoconstricción y acorta el intervalo entre latidos. Ambos cambios elevan el SPI. Por eso se espera un aumento durante el CPT y un regreso hacia el valor basal en la recuperación. 
 
-Para aplicarlo en el laboratorio, en lugar de la inmersión en agua helada, se usó una variante simple: se le pidió al profesor, que fue el sujeto de prueba, que sostuviera un trozo de hielo en la mano izquierda, mano contraria del sensor. 
+Para aplicarlo en el laboratorio, en lugar de la inmersión en agua helada, se usó una variante simple: se le pidió al profesor, que fue el sujeto de prueba, que sostuviera un trozo de hielo en la mano izquierda, mano contraria del sensor. La captura duró 2 minutos, la cual constó de tres fases: Fase basal (0-40 s): Reposo, sin estímulo; CPT (40-80 s): el sujeto de prueba sostiene el hielo; Fase de recuperación (80-120s): Se retira el hielo y el sujeto vuelve al reposo.
+
+
+### Referencias Bibliográficas
+
+[1] V. Bonhomme, K. Uutela, G. Hans, I. Maquoi, J. D. Born y J. F. Brichant, "Comparison of the Surgical Pleth Index™ with haemodynamic variables to assess nociception-anti-nociception balance during general anaesthesia," British Journal of Anaesthesia, vol. 106, no. 1, pp. 101–111, 2011. https://doi.org/10.1093/bja/aeq291.
+
+[2] M. Huiku et al., "Assessment of surgical stress during general anaesthesia," British Journal of Anaesthesia, vol. 98, no. 4, pp. 447–455, 2007. https://doi.org/10.1093/bja/aem004.
+
+[3] G. Lamotte, C. J. Boes, P. A. Low y E. A. Coon, "The expanding role of the cold pressor test: a brief history," Clinical Autonomic Research, vol. 31, no. 2, 2021.
