@@ -81,4 +81,6 @@ Cabe señalar que el SPI, tal como lo definió GE Healthcare, está pensado para
 
 [2] M. Huiku et al., "Assessment of surgical stress during general anaesthesia," British Journal of Anaesthesia, vol. 98, no. 4, pp. 447–455, 2007. https://doi.org/10.1093/bja/aem004.
 
-[3] G. Lamotte, C. J. Boes, P. A. Low y E. A. Coon, "The expanding role of the cold pressor test: a brief history," Clinical Autonomic Research, vol. 31, no. 2, 2021.
+[3] "Surgical pleth index monitoring in perioperative pain management: usefulness and limitations," Korean Journal of Anesthesiology, ekja.org/upload/pdf/kja-23158.pdf.
+
+[4] GE Healthcare, "Surgical Pleth Index — Quick Guide" y documentación técnica asociada, gehealthcare.co.uk.
