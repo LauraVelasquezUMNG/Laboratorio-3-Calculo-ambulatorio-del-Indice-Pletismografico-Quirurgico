@@ -76,10 +76,7 @@ Esta es la fórmula original reportada por Huiku et al. (2007) y confirmada en l
 > $SPI = 100 - (0.33 \times HBI + 0.67 \times PPGA)$ [5], [6], y otros la
 > escriben como $100 \times (0.67 \times PPGA_{norm} + 0.33 \times HBI_{norm})$ [7]
 > (posible error tipográfico de signo). Comparando con las fuentes primarias
-> —el artículo original de Huiku et al. y la documentación del fabricante—,
-> la versión consistente es 0,7 sobre PPGAnorm y 0,3 sobre HBInorm [1], [4].
-> Vale la pena mencionar esta discrepancia entre publicaciones en el informe,
-> aclarando cuál versión se tomó como referencia.
+> (el artículo original de Huiku et al), la versión consistente es 0,7 sobre PPGAnorm y 0,3 sobre HBInorm.
 
 ### Referencias Bibliográficas
 
