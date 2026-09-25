@@ -27,9 +27,9 @@ El objetivo de la Parte A fue construir el sistema de adquisición de la onda de
 
 Se montó en protoboard el circuito presentado en la figura anterior, tomado de la guía de laboratorio, el cual consta de las siguientes etapas:
 
-- Etapa de emisión: un transistor 2N3904 que controla el LED emisor del optoacoplador.
-- Etapa de detección: el fototransistor, cuya señal pasa por un filtro pasa-altas pasivo que elimina el nivel DC.
-- Etapa de amplificación y filtrado: un filtro pasa-bajas activo con LM358 y un segundo amplificador, con potenciómetros para ajustar el offset y la amplitud.
+- **Etapa de emisión:** un transistor 2N3904 que controla el LED emisor del optoacoplador.
+- **Etapa de detección**: el fototransistor, cuya señal pasa por un filtro pasa-altas pasivo que elimina el nivel DC.
+- **Etapa de amplificación y filtrado:** un filtro pasa-bajas activo con LM358 y un segundo amplificador, con potenciómetros para ajustar el offset y la amplitud.
 
 Como sensor se usó el optoacoplador, modificado para funcionar como sensor de reflectancia. El emisor y el detector se separaron y se colocaron lado a lado, de modo que la luz reflejada por el dedo llegara al detector. La salida del circuito se conectó a una entrada analógica de una ESP32 y se verificó la captura de las variaciones del volumen sanguíneo. Aunque el circuito se montó y se probó satisfactoriamente, la captura final se realizó con un módulo MAX30102 conectado a la ESP32, el cual integra en un solo encapsulado LEDs rojo e infrarrojo, un fotodetector y un ADC interno.
 
@@ -62,8 +62,8 @@ La analgesia (por ejemplo, con opioides) tiende a atenuar ambos efectos. Por est
 
 #### **1.2. Variables de entrada**
 
-- PPGA (Photoplethysmographic Pulse Wave Amplitude): diferencia entre el valor máximo y el mínimo de la señal PPG en cada latido (la componente AC de la onda de pulso).
-- HBI (Heart Beat Interval): intervalo de tiempo entre dos picos sistólicos consecutivos; equivale al recíproco de la frecuencia cardíaca instantánea.
+- **PPGA (Photoplethysmographic Pulse Wave Amplitude):** diferencia entre el valor máximo y el mínimo de la señal PPG en cada latido (la componente AC de la onda de pulso).
+- **HBI (Heart Beat Interval):** intervalo de tiempo entre dos picos sistólicos consecutivos; equivale al recíproco de la frecuencia cardíaca instantánea.
 
 #### **1.3. Normalización**
 
